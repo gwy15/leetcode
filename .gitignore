@@ -1,10 +1,14 @@
 .idea
 .vscode
 
+# buildouts
 *.exe
 *.out
 *.pdb
 
+# rust
+target
+Cargo.lock
 *.rlib
 
 __*
