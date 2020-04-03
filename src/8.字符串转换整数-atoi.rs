@@ -50,34 +50,30 @@ impl Solution {
     pub fn my_atoi(s: String) -> i32 {
         let mut status = Status::Waiting;
         for ch in s.chars() {
-            match status {
+            status = match status {
                 Status::Waiting => match ch {
                     ' ' => continue,
-                    '-' => status = Status::Negative(0),
-                    '+' => status = Status::Positive(0),
-                    '0'..='9' => status = Status::Positive(c2i(ch)),
-                    _ => status = Status::End(0),
+                    '-' => Status::Negative(0),
+                    '+' => Status::Positive(0),
+                    '0'..='9' => Status::Positive(c2i(ch)),
+                    _ => Status::End(0),
                 },
                 Status::Positive(a) => match ch {
-                    '0'..='9' => {
-                        status = match Solution::overflowing_mul10_add(a, c2i(ch)) {
-                            (o, true) => Status::End(o),
-                            (ans, false) => Status::Positive(ans),
-                        };
-                    }
-                    _ => status = Status::End(a),
+                    '0'..='9' => match Solution::overflowing_mul10_add(a, c2i(ch)) {
+                        (o, true) => Status::End(o),
+                        (ans, false) => Status::Positive(ans),
+                    },
+                    _ => Status::End(a),
                 },
                 Status::Negative(a) => match ch {
-                    '0'..='9' => {
-                        status = match Solution::overflowing_mul10_sub(a, c2i(ch)) {
-                            (o, true) => Status::End(o),
-                            (ans, false) => Status::Negative(ans),
-                        };
-                    }
-                    _ => status = Status::End(a),
+                    '0'..='9' => match Solution::overflowing_mul10_sub(a, c2i(ch)) {
+                        (o, true) => Status::End(o),
+                        (ans, false) => Status::Negative(ans),
+                    },
+                    _ => Status::End(a),
                 },
                 Status::End(_) => break,
-            }
+            };
         }
         match status {
             Status::Positive(ans) | Status::Negative(ans) | Status::End(ans) => ans,
