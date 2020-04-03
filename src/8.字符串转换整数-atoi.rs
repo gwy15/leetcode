@@ -5,7 +5,6 @@
  */
 struct Solution;
 // @lc code=start
-
 fn c2i(c: char) -> i32 {
     (c as u8 - '0' as u8) as i32
 }
@@ -19,13 +18,12 @@ enum Status {
 
 impl Solution {
     fn overflowing_mul10(a: i32) -> (i32, bool) {
-        let (ans, overflowing) = a.overflowing_mul(10);
-        match overflowing {
-            true => match a > 0 {
+        match a.overflowing_mul(10) {
+            (_, true) => match a > 0 {
                 true => (i32::max_value(), true),
                 false => (i32::min_value(), true),
             },
-            false => (ans, false),
+            (ans, false) => (ans, false),
         }
     }
 
@@ -52,7 +50,7 @@ impl Solution {
     pub fn my_atoi(s: String) -> i32 {
         let mut status = Status::Waiting;
         for ch in s.chars() {
-            match &status {
+            match status {
                 Status::Waiting => match ch {
                     ' ' => continue,
                     '-' => status = Status::Negative(0),
@@ -62,21 +60,21 @@ impl Solution {
                 },
                 Status::Positive(a) => match ch {
                     '0'..='9' => {
-                        status = match Solution::overflowing_mul10_add(*a, c2i(ch)) {
+                        status = match Solution::overflowing_mul10_add(a, c2i(ch)) {
                             (o, true) => Status::End(o),
                             (ans, false) => Status::Positive(ans),
                         };
                     }
-                    _ => status = Status::End(*a),
+                    _ => status = Status::End(a),
                 },
                 Status::Negative(a) => match ch {
                     '0'..='9' => {
-                        status = match Solution::overflowing_mul10_sub(*a, c2i(ch)) {
+                        status = match Solution::overflowing_mul10_sub(a, c2i(ch)) {
                             (o, true) => Status::End(o),
                             (ans, false) => Status::Negative(ans),
                         };
                     }
-                    _ => status = Status::End(*a),
+                    _ => status = Status::End(a),
                 },
                 Status::End(_) => break,
             }
