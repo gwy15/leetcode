@@ -12,79 +12,79 @@ fn c2i(c: char) -> i32 {
 
 enum Status {
     Waiting,
-    Positive,
-    Negative,
-    End,
+    Positive(i32),
+    Negative(i32),
+    End(i32),
 }
 
 impl Solution {
-    fn mul10(a: i32) -> i32 {
+    fn overflowing_mul10(a: i32) -> (i32, bool) {
         let (ans, overflowing) = a.overflowing_mul(10);
         match overflowing {
             true => match a > 0 {
-                true => i32::max_value(),
-                false => i32::min_value(),
+                true => (i32::max_value(), true),
+                false => (i32::min_value(), true),
             },
-            false => ans,
+            false => (ans, false),
         }
     }
 
-    fn mul10_add(a: i32, b: i32) -> i32 {
-        let a = Solution::mul10(a);
-        let (ans, o) = a.overflowing_add(b);
-        match o {
-            true => i32::max_value(),
-            false => ans,
+    fn overflowing_mul10_add(a: i32, b: i32) -> (i32, bool) {
+        match Solution::overflowing_mul10(a) {
+            (o, true) => (o, true),
+            (a, false) => match a.overflowing_add(b) {
+                (_, true) => (i32::max_value(), true),
+                (ans, false) => (ans, false),
+            },
         }
     }
 
-    fn mul10_sub(a: i32, b: i32) -> i32 {
-        let a = Solution::mul10(a);
-        let (ans, o) = a.overflowing_sub(b);
-        match o {
-            true => i32::min_value(),
-            false => ans,
+    fn overflowing_mul10_sub(a: i32, b: i32) -> (i32, bool) {
+        match Solution::overflowing_mul10(a) {
+            (o, true) => (o, true),
+            (a, false) => match a.overflowing_sub(b) {
+                (_, true) => (i32::min_value(), true),
+                (ans, false) => (ans, false),
+            },
         }
     }
 
     pub fn my_atoi(s: String) -> i32 {
-        let mut n: i32 = 0;
         let mut status = Status::Waiting;
         for ch in s.chars() {
             match &status {
                 Status::Waiting => match ch {
                     ' ' => continue,
-                    '-' => status = Status::Negative,
-                    '+' => status = Status::Positive,
-                    '0'..='9' => {
-                        status = Status::Positive;
-                        n = c2i(ch);
-                    }
-                    _ => break,
+                    '-' => status = Status::Negative(0),
+                    '+' => status = Status::Positive(0),
+                    '0'..='9' => status = Status::Positive(c2i(ch)),
+                    _ => status = Status::End(0),
                 },
-                Status::Positive => match ch {
+                Status::Positive(a) => match ch {
                     '0'..='9' => {
-                        n = Solution::mul10_add(n, c2i(ch));
-                        if n == i32::max_value() {
-                            break;
-                        }
+                        status = match Solution::overflowing_mul10_add(*a, c2i(ch)) {
+                            (o, true) => Status::End(o),
+                            (ans, false) => Status::Positive(ans),
+                        };
                     }
-                    _ => break,
+                    _ => status = Status::End(*a),
                 },
-                Status::Negative => match ch {
+                Status::Negative(a) => match ch {
                     '0'..='9' => {
-                        n = Solution::mul10_sub(n, c2i(ch));
-                        if n == i32::min_value() {
-                            break;
-                        }
+                        status = match Solution::overflowing_mul10_sub(*a, c2i(ch)) {
+                            (o, true) => Status::End(o),
+                            (ans, false) => Status::Negative(ans),
+                        };
                     }
-                    _ => break,
+                    _ => status = Status::End(*a),
                 },
-                Status::End => unreachable!(),
+                Status::End(_) => break,
             }
         }
-        status = Status::End;
-        n
+        match status {
+            Status::Positive(ans) | Status::Negative(ans) | Status::End(ans) => ans,
+            Status::Waiting => 0,
+        }
     }
 }
 // @lc code=end
@@ -104,4 +104,6 @@ fn test_solution() {
     test!("4193 with words", 4193);
     test!("words and 987", 0);
     test!("-91283472332", -2147483648);
+    test!("-2147483648", -2147483648);
+    test!("  ", 0);
 }
