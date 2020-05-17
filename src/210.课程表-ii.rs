@@ -5,43 +5,40 @@
  */
 struct Solution;
 // @lc code=start
-use std::collections::VecDeque;
 impl Solution {
     pub fn find_order(num_courses: i32, prerequisites: Vec<Vec<i32>>) -> Vec<i32> {
         let n = num_courses as usize;
-        let mut sorted = Vec::new();
-        let mut in_rank = vec![0; n];
-        let mut next: Vec<Vec<i32>> = vec![Vec::new(); n];
-        let mut zero_in_rank_nodes = VecDeque::new();
-        // init graph
+        // init graph (next and in_rank)
+        let mut next: Vec<Vec<usize>> = vec![Vec::new(); n];
+        let mut in_degree: Vec<u32> = vec![0; n];
         for edge in prerequisites.iter() {
             // i <- j
             let (i, j) = (edge[0], edge[1]);
-            next[j as usize].push(i);
-            in_rank[i as usize] += 1;
+            next[j as usize].push(i as usize);
+            in_degree[i as usize] += 1;
         }
-        // init zero in-rank nodes
-        for i in 0..n {
-            if in_rank[i] == 0 {
-                zero_in_rank_nodes.push_back(i);
-            }
-        }
+        // extract zero in-degree nodes
+        let mut orphans: Vec<usize> = (0..n).filter(|&i| in_degree[i] == 0).collect();
         // sort
-        while zero_in_rank_nodes.len() > 0 {
-            let i = zero_in_rank_nodes.pop_front().unwrap();
-            sorted.push(i as i32);
+        let mut ans = Vec::new();
+        while orphans.len() > 0 {
+            let i = orphans.pop().unwrap();
+            // i is the minium now
+            ans.push(i as i32);
             // clear in rank
             for &j in &next[i] {
-                in_rank[j as usize] -= 1;
-                if in_rank[j as usize] == 0 {
-                    zero_in_rank_nodes.push_back(j as usize);
+                in_degree[j] -= 1;
+                if in_degree[j] == 0 {
+                    orphans.push(j);
                 }
             }
         }
-        if sorted.len() != n {
-            return vec![];
+        // return
+        if ans.len() == n {
+            ans
+        } else {
+            Vec::new()
         }
-        sorted
     }
 }
 // @lc code=end
@@ -67,7 +64,7 @@ fn test() {
         };
     }
     test!(2, [[1, 0]], [0, 1]);
-    test!(4, [[1, 0], [2, 0], [3, 1], [3, 2]], [0, 1, 2, 3]);
+    test!(4, [[1, 0], [2, 0], [3, 1], [3, 2]], [0, 2, 1, 3]);
     // no answer
     test!(3, [[1, 0], [1, 2], [0, 1]], []);
 }
