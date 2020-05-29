@@ -4,6 +4,7 @@ import toml
 
 rust_files = list(Path('.').glob('*.rs'))
 rust_files = list(filter(lambda f: not f.stem.startswith('_'), rust_files))
+rust_files = list(filter(lambda f: not f.stem == 'utils', rust_files))
 assert len(rust_files) == 1
 rust_file = rust_files[0]
 print(f'File set as {rust_file}')
