@@ -111,4 +111,11 @@ pub mod macros {
             ),*]
         }
     }
+
+    #[macro_export]
+    macro_rules! btree {
+        ($tree:tt) => {
+            crate::utils::binary_tree::parse(stringify!($tree))
+        };
+    }
 }
