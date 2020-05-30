@@ -26,7 +26,10 @@ pub mod binary_tree {
         }
         let mut data_provider = s[1..s.len() - 1].split(',');
         // make root
-        let root_val = data_provider.next().unwrap().parse().unwrap();
+        let root_str = data_provider.next().unwrap().trim();
+        let root_val = root_str
+            .parse()
+            .expect(&format!("Unexpected string: {}", root_str));
         let root = Rc::new(RefCell::new(TreeNode::new(root_val)));
         // BFS
         let mut q = std::collections::VecDeque::new();
@@ -35,10 +38,12 @@ pub mod binary_tree {
             ($node:expr, $left_or_right:tt) => {
                 match data_provider.next() {
                     None => break,
-                    Some(val_str) => match val_str {
-                        "null" | " null" => {}
-                        _ => {
-                            let val = val_str.parse().unwrap();
+                    Some(val_str) => match val_str.trim() {
+                        "null" => {}
+                        val_str => {
+                            let val = val_str
+                                .parse()
+                                .expect(&format!("Unexpected val: {}", val_str));
                             let new_node = TreeNode::new(val);
                             let node_ptr = Rc::new(RefCell::new(new_node));
                             $node.borrow_mut().$left_or_right = Some(node_ptr.clone());
@@ -70,7 +75,7 @@ pub mod binary_tree {
             assert_eq!(t.borrow().left.as_ref().unwrap().borrow().val, 2);
             assert_eq!(t.borrow().right.as_ref().unwrap().borrow().val, 3);
             // [1,null,2,3]
-            let t = parse("[1,null,2,3]").unwrap();
+            let t = parse("[1, null, 2, 3]").unwrap();
             assert_eq!(t.borrow().val, 1);
             assert_eq!(t.borrow().right.as_ref().unwrap().borrow().val, 2);
             assert_eq!(
