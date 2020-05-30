@@ -92,3 +92,18 @@ pub mod binary_tree {
 
 // export
 pub use binary_tree::TreeNode;
+
+pub mod macros {
+    #[macro_export]
+    macro_rules! vec2d {
+        [$(
+            [$(
+                $i:expr
+            ),*]
+        ),*] => {
+            vec![$(
+                vec![$($i),*]
+            ),*]
+        }
+    }
+}
