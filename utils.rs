@@ -20,6 +20,7 @@ pub mod binary_tree {
         }
     }
 
+    #[allow(unused)]
     pub fn parse(s: &str) -> Option<Rc<RefCell<TreeNode>>> {
         if s == "[]" {
             return None;
