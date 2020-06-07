@@ -5,28 +5,13 @@
  */
 struct Solution;
 // @lc code=start
-use std::collections::VecDeque;
-#[allow(unused)]
+use std::collections::{HashMap, VecDeque};
 impl Solution {
-    fn word_dist(a: &str, b: &str) -> i32 {
-        let a = a.as_bytes();
-        let b = b.as_bytes();
-        let mut dist = 0;
-        for i in 0..a.len() {
-            if a[i] != b[i] {
-                dist += 1;
-                if dist >= 2 {
-                    return 2;
-                }
-            }
-        }
-        dist
-    }
-
     fn word_to_index(word: &str, words: &Vec<String>) -> Option<usize> {
         (0..words.len()).filter(|&i| &words[i] == word).next()
     }
 
+    #[allow(unused)]
     pub fn find_ladders(
         begin_word: String,
         end_word: String,
@@ -45,14 +30,29 @@ impl Solution {
             None => return vec![],
         };
         // build graph
+        // let n = word_list.len();
+        // let mut next: Vec<Vec<usize>> = vec![vec![]; n];
+        // for i in 0..n {
+        //     let si = &word_list[i];
+        //     for j in 0..n {
+        //         if i != j && Self::word_dist(si, &word_list[j]) == 1 {
+        //             next[i].push(j);
+        //         }
+        //     }
+        // }
         let n = word_list.len();
         let mut next: Vec<Vec<usize>> = vec![vec![]; n];
-        for i in 0..n {
-            let si = &word_list[i];
-            for j in 0..n {
-                if i != j && Self::word_dist(si, &word_list[j]) == 1 {
-                    next[i].push(j);
+        let mut blur: HashMap<String, Vec<usize>> = HashMap::new();
+        for (i, word) in word_list.iter().enumerate() {
+            for j in 0..word.len() {
+                let mut s = word.clone();
+                s.replace_range(j..j + 1, "*");
+                let indexes = blur.entry(s).or_insert_with(|| Vec::new());
+                for &index in indexes.iter() {
+                    next[i].push(index);
+                    next[index].push(i);
                 }
+                indexes.push(i);
             }
         }
 
