@@ -28,7 +28,7 @@ impl Solution {
             .map(|(i, skill)| (skill, i))
             .collect();
 
-        // Skills -> number of people. Can be reduced (using team)
+        // Skills -> number of people.
         let mut size = vec![-1; full_skills + 1];
         size[0] = 0;
 
@@ -46,9 +46,7 @@ impl Solution {
                 let new_n = size[ori_skill] + 1;
                 if size[new_skills] == -1 || new_n < size[new_skills] {
                     size[new_skills] = new_n;
-                    let mut new_team: Team = team[ori_skill];
-                    new_team |= 1 << i;
-                    team[new_skills] = new_team;
+                    team[new_skills] = team[ori_skill] | (1 << i);
                 }
             }
         }
