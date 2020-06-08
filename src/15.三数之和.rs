@@ -7,25 +7,27 @@ struct Solution;
 // @lc code=start
 use std::cmp::Ordering;
 impl Solution {
+    #[inline]
     fn two_sum_sorted(nums: &[i32], target: i32) -> Vec<Vec<i32>> {
         let n = nums.len();
         let (mut left, mut right) = (0, n - 1);
         let mut ans = Vec::new();
         while left < right {
-            let sum = nums[left] + nums[right];
+            let (a, b) = (nums[left], nums[right]);
+            let sum = a + b;
             if sum == target {
                 ans.push(vec![nums[left], nums[right]]);
             }
             match sum.cmp(&target) {
                 Ordering::Equal | Ordering::Less => {
-                    left += 1;
-                    while left < n - 1 && nums[left - 1] == nums[left] {
+                    // move left
+                    while nums[left] == a && left < right {
                         left += 1;
                     }
                 }
                 Ordering::Greater => {
-                    right -= 1;
-                    while right > 0 && nums[right] == nums[right + 1] {
+                    // move right
+                    while nums[right] == b && left < right {
                         right -= 1;
                     }
                 }
@@ -34,21 +36,24 @@ impl Solution {
         ans
     }
     pub fn three_sum(mut nums: Vec<i32>) -> Vec<Vec<i32>> {
-        nums.sort_unstable();
         let n = nums.len();
         if n < 3 {
             return vec![];
         }
+        nums.sort_unstable();
         let mut ans = vec![];
-        for i in 0..n - 2 {
-            if i > 0 && nums[i - 1] == nums[i] {
-                continue;
-            }
+        let mut i = 0;
+        while i < n - 2 {
             let first = nums[i];
-            let target = -first;
-            for mut rest in Self::two_sum_sorted(&nums[i + 1..], target) {
+            if first > 0 {
+                break;
+            }
+            for mut rest in Self::two_sum_sorted(&nums[i + 1..], -first) {
                 rest.insert(0, first);
                 ans.push(rest);
+            }
+            while nums[i] == first && i < n - 2 {
+                i += 1;
             }
         }
         ans
