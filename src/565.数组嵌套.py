@@ -31,7 +31,7 @@ class DSU:
         return self.size[x]
 
 
-class Solution:
+class SolutionDSU:
     def arrayNesting(self, nums: List[int]) -> int:
         n = len(nums)
         ans = 0
@@ -40,6 +40,20 @@ class Solution:
             y = nums[x]
             size = dsu.union(x, y)
             ans = max(ans, size)
+        return ans
+
+
+class Solution:
+    def arrayNesting(self, nums: List[int]) -> int:
+        ans = 0
+        for i in range(len(nums)):
+            cnt = 0
+            while nums[i] != -1:
+                j = i
+                cnt += 1
+                i = nums[i]
+                nums[j] = -1
+            ans = max(ans, cnt)
         return ans
 
 
