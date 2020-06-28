@@ -7,4 +7,4 @@ edition = "2018"
 [dependencies]
 
 [lib]
-path = "1071.字符串的最大公因子.rs"
+path = "1140.石子游戏-ii.rs"
