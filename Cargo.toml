@@ -5,6 +5,7 @@ authors = [ "gwy15 <gwy15thu@gmail.com>",]
 edition = "2018"
 
 [dependencies]
+rand = "0.7.3"
 
 [lib]
-path = "1140.石子游戏-ii.rs"
+path = "350.两个数组的交集-ii.rs"

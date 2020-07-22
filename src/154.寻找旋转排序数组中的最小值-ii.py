@@ -10,41 +10,17 @@ import unittest
 
 class Solution:
     def findMin(self, nums: List[int]) -> int:
-        return self.find(nums, 0, len(nums))
+        left, right = 0, len(nums)-1
+        while left < right:
+            mid = (left + right) // 2
+            if nums[mid] > nums[right]:
+                left = mid + 1
+            elif nums[mid] < nums[right]:
+                right = mid
+            else:  # nums[mid] == nums[right]
+                right -= 1
 
-    def find(self, nums: List[int], i: int, j: int) -> int:
-        # print(f'find {nums[i:j]}, i={i}, j={j}')
-        if i + 1 >= j:
-            return nums[i]
-        if j - i <= 3:
-            return min(nums[i:j])
-        # 退化
-        if nums[i] < nums[j-1]:
-            return nums[i]
-
-        # 首位相等
-        if nums[i] == nums[j-1]:
-            mid = (i + j) // 2
-            if nums[mid] > nums[i]:
-                return self.find(nums, mid+1, j)
-            elif nums[mid] < nums[i]:
-                return self.find(nums, i, mid+1)
-            else:
-                while i + 1 < j and nums[i] == nums[j-1]:
-                    i += 1
-                return self.find(nums, i, j)
-
-        mid = (i + j) // 2
-        # print(f'mid={mid}, [mid]={nums[mid]}')
-        if nums[mid] >= nums[i]:
-            # 搜索 (mid, j)
-            return self.find(nums, mid+1, j)
-        if nums[mid] <= nums[j-1]:
-            assert mid + 1 != j
-            # 搜索 [i, mid]
-            return self.find(nums, i, mid+1)
-        raise ValueError
-
+        return nums[left]
 
 # @lc code=end
 
