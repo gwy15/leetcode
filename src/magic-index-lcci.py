@@ -3,9 +3,15 @@ from typing import List
 
 class Solution:
     def findMagicIndex(self, nums: List[int]) -> int:
-        for i, n in enumerate(nums):
-            if i == n:
+        i, n = 0, len(nums)
+        while i < n:
+            num = nums[i]
+            if num == i:
                 return i
+            elif num > i:
+                i = num
+            else:
+                i += 1
         return -1
 
 
