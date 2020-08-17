@@ -1,3 +1,6 @@
+from typing import List
+
+
 class TreeNode(object):
     def __init__(self, x):
         self.val = x
@@ -109,3 +112,34 @@ class Test:
         t.right.left.left = TreeNode(9)
         assert c.serialize(t) == '[5,4,7,3,null,2,null,-1,null,9]'
         assert c.deserialize('[5,4,7,3,null,2,null,-1,null,9]') == t
+
+
+class ListNode:
+    """Singly-linked list"""
+
+    def __init__(self, x):
+        self.val = x
+        self.next = None
+
+    @staticmethod
+    def from_list(vals: List[int]) -> 'ListNode':
+        hyperhead = ListNode(0)
+        ptr = hyperhead
+        for val in vals:
+            ptr.next = ListNode(val)
+            ptr = ptr.next
+
+        return hyperhead.next
+
+    def __eq__(self, rhs: 'ListNode') -> bool:
+        if type(self) != type(rhs):
+            return False
+        if self.val != rhs.val:
+            return False
+        return self.next == rhs.next
+
+    def __repr__(self):
+        if self.next is None:
+            return f'{self.val}'
+        else:
+            return f'{self.val} -> {self.next}'
