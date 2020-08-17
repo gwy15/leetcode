@@ -74,7 +74,8 @@
         "inorder",
         "qsize",
         "subarray",
-        "unfollows"
+        "unfollows",
+        "vals"
     ],
     "C_Cpp.clang_format_fallbackStyle": "{ BasedOnStyle: Google, TabWidth: 4 }",
     "C_Cpp.default.compilerArgs": [

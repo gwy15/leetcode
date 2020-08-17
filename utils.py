@@ -122,24 +122,35 @@ class ListNode:
         self.next = None
 
     @staticmethod
-    def from_list(vals: List[int]) -> 'ListNode':
+    def from_list(vals: List[int], circle_pos=None) -> 'ListNode':
         hyperhead = ListNode(0)
         ptr = hyperhead
         for val in vals:
             ptr.next = ListNode(val)
             ptr = ptr.next
 
+        if circle_pos is not None and circle_pos != -1:
+            circle = hyperhead
+            for i in range(circle_pos + 1):
+                circle = circle.next
+            ptr.next = circle
+
         return hyperhead.next
 
-    def __eq__(self, rhs: 'ListNode') -> bool:
-        if type(self) != type(rhs):
-            return False
-        if self.val != rhs.val:
-            return False
-        return self.next == rhs.next
+    # def __eq__(self, rhs: 'ListNode') -> bool:
+    #     if type(self) != type(rhs):
+    #         return False
+    #     if self.val != rhs.val:
+    #         return False
+    #     return self.next == rhs.next
 
-    def __repr__(self):
+    def to_string(self, depth=0, max_depth=50):
+        if depth > max_depth:
+            return '...'
         if self.next is None:
             return f'{self.val}'
         else:
-            return f'{self.val} -> {self.next}'
+            return f'{self.val} -> {self.next.to_string(depth+1, max_depth)}'
+
+    def __repr__(self):
+        return self.to_string()
