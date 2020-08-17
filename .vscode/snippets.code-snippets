@@ -34,5 +34,13 @@
         "scope": "rust",
         "prefix": "unused",
         "body": "#[allow(unused)]"
+    },
+    "python prelude": {
+        "scope": "python",
+        "prefix": "leetcode Python prelude",
+        "body": [
+            "from typing import List",
+            "from utils import *"
+        ]
     }
 }
