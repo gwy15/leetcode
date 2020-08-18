@@ -39,6 +39,30 @@ impl Solution {
             ans.max(area)
         })
     }
+
+    pub fn largest_rectangle_area2(mut heights: Vec<i32>) -> i32 {
+        heights.push(0);
+        let mut ans = 0;
+        let mut stack = vec![];
+        stack.push((-1, 0));
+        for (i, h) in heights.into_iter().enumerate() {
+            loop {
+                let (_, last_h) = stack.last().unwrap();
+                if *last_h > h {
+                    // pop
+                    let (_, height) = stack.pop().unwrap();
+                    // (left_i, <height) ... (_,height) ... (i,<height)
+                    //
+                    let (left_i, _) = stack.last().unwrap();
+                    ans = ans.max((i as i32 - left_i - 1) * height);
+                } else {
+                    break;
+                }
+            }
+            stack.push((i as i32, h));
+        }
+        ans
+    }
 }
 // @lc code=end
 #[test]
