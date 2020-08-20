@@ -83,7 +83,6 @@ impl Solution {
                 }
                 '1'..='8' | Blocks::RevealedBlank => {
                     // pass
-                    eprintln!("char is {}", board[i][j]);
                 }
                 _ => {
                     eprintln!("char is {}", board[i][j]);
