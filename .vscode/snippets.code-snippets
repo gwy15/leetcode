@@ -42,5 +42,20 @@
             "from typing import List",
             "from utils import *"
         ]
+    },
+    "python test": {
+        "scope": "python",
+        "prefix": "leetcode Python test",
+        "body": [
+            "if __name__ == '__main__':",
+            "    def test(input, expected):",
+            "        calc = Solution()",
+            "        if calc != expected:",
+            "            print(f'case failed: `{input}`')",
+            "            print(f'  calc     = `{calc}`')",
+            "            print(f'  expected = `{expected}`')",
+            "            exit(1)",
+            "    $1"
+        ]
     }
 }
