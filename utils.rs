@@ -114,6 +114,19 @@ pub mod macros {
     }
 
     #[macro_export]
+    macro_rules! vec_string {
+        [$($s:expr),*] => {
+            {
+                let mut v = Vec::<String>::new();
+                $(
+                    v.push($s.into());
+                )*
+                v
+            }
+        };
+    }
+
+    #[macro_export]
     macro_rules! btree {
         ($tree:tt) => {
             crate::utils::binary_tree::parse(stringify!($tree))
