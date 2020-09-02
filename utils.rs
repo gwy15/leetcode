@@ -115,6 +115,9 @@ pub mod macros {
 
     #[macro_export]
     macro_rules! vec_string {
+        [] => {
+            Vec::<String>::new()
+        };
         [$($s:expr),*] => {
             {
                 let mut v = Vec::<String>::new();
