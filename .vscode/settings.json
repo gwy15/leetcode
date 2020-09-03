@@ -80,5 +80,8 @@
     "C_Cpp.clang_format_fallbackStyle": "{ BasedOnStyle: Google, TabWidth: 4 }",
     "C_Cpp.default.compilerArgs": [
         "-c++17"
-    ]
+    ],
+    "files.exclude": {
+        "target": true
+    }
 }
