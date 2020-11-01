@@ -39,8 +39,7 @@
         "scope": "python",
         "prefix": "leetcode Python prelude",
         "body": [
-            "from typing import List",
-            "from utils import *"
+            "from prelude import *"
         ]
     },
     "python test": {
