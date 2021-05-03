@@ -6,57 +6,50 @@
 struct Solution;
 // @lc code=start
 impl Solution {
-    pub fn reverse(mut x: i32) -> i32 {
-        let mut stack = Vec::new();
-        let mut ans: i32 = 0;
-        if x >= 0 {
-            while x > 0 {
-                stack.push(x % 10);
-                x /= 10;
+    fn reverse_pos(mut x: i32) -> i32 {
+        let mut ans = 0i32;
+        while x > 0 {
+            let (_ans, o) = ans.overflowing_mul(10);
+            if o {
+                return 0;
             }
-
-            for b in stack {
-                match ans.checked_mul(10).and_then(|a| a.checked_add(b)) {
-                    Some(c) => {
-                        ans = c;
-                    }
-                    None => {
-                        return 0;
-                    }
-                }
+            let (_ans, o) = _ans.overflowing_add(x % 10);
+            if o {
+                return 0;
             }
-        } else {
-            while x < 0 {
-                let digit = (10 - (x % 10)) % 10;
-                stack.push(digit);
-                x = (x + digit) / 10;
-            }
-            for b in stack {
-                match ans.checked_mul(10).and_then(|a| a.checked_sub(b)) {
-                    Some(c) => {
-                        ans = c;
-                    }
-                    None => {
-                        return 0;
-                    }
-                }
-            }
+            x /= 10;
+            ans = _ans;
         }
         ans
     }
+    pub fn reverse(x: i32) -> i32 {
+        if x == i32::MIN {
+            return 0;
+        }
+        match x {
+            // 防止溢出，-2147483648 一定溢出
+            i32::MIN => 0,
+            x if x < 0 => -Solution::reverse(-x),
+            x => Solution::reverse_pos(x),
+        }
+    }
 }
+
 // @lc code=end
 #[test]
 fn test_solution() {
     macro_rules! test {
-        ($n:expr, $ans:expr) => {
-            assert_eq!(Solution::reverse($n), $ans);
+        ($args:expr, $ans:expr) => {
+            assert_eq!(Solution::reverse($args), $ans)
         };
-    };
+    }
     test!(123, 321);
-    test!(0, 0);
     test!(-123, -321);
+    test!(0, 0);
     test!(120, 21);
-    test!(i32::max_value(), 0);
-    test!(i32::min_value(), 0);
+    test!(i32::MIN, 0);
+    test!(2147483647, 0);
+    test!(1463847413, 0);
+    test!(2147483619, 0);
+    test!(-1147483647, 0);
 }
