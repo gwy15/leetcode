@@ -10,4 +10,4 @@ log = "0.4.14"
 pretty_env_logger = "0.4.0"
 
 [lib]
-path = "1912.设计电影租借系统.rs"
+path = "067. 最大的异或.rs"
