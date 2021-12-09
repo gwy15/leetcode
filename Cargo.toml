@@ -10,4 +10,4 @@ log = "0.4.14"
 pretty_env_logger = "0.4.0"
 
 [lib]
-path = "067. 最大的异或.rs"
+path = "794.有效的井字游戏.rs"
